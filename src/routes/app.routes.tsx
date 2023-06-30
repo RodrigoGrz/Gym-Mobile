@@ -27,7 +27,7 @@ export function AppRoutes() {
 
     const iconSize = sizes[6];
 
-    return(
+    return (
         <Navigator screenOptions={{
             headerShown: false,
             tabBarShowLabel: false,

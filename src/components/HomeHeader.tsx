@@ -5,7 +5,7 @@ import { UserPhoto } from './UserPhoto';
 import { TouchableOpacity } from 'react-native';
 
 export function HomeHeader() {
-    return(
+    return (
         <HStack bg="gray.600" pt={16} pb={5} px={8} alignItems="center">
             <UserPhoto
                 source={{ uri: 'https://github.com/rodrigogrz.png' }}
