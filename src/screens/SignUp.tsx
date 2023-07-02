@@ -1,5 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { VStack, Image, Text, Center, Heading, ScrollView } from 'native-base';
+import { useForm, Controller } from 'react-hook-form';
 
 import LogoSvg from '@assets/logo.svg';
 import BackgroundImg from '@assets/background.png';
@@ -7,12 +8,24 @@ import BackgroundImg from '@assets/background.png';
 import { Input } from '@components/Input';
 import { Button } from '@components/Button';
 
+type FormDataProps = {
+    name: string;
+    email: string;
+    password: string;
+    password_confirm: string;
+}
+
 export function SignUp() {
+    const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>();
     const navigation = useNavigation();
 
     function handleGoBack() {
         navigation.goBack();
     }
+
+    function handleSignUp({ name, email, password, password_confirm }: FormDataProps) {
+        console.log()
+    }   
 
     return (
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
@@ -38,22 +51,67 @@ export function SignUp() {
                         Crie sua conta
                     </Heading>
 
-                    <Input 
-                        placeholder="Nome"
+                    <Controller 
+                        control={control}
+                        name="name"
+                        rules={{
+                            required: 'Informe o nome.'
+                        }}
+                        render={({ field: { onChange, value } }) => (
+                            <Input 
+                                placeholder="Nome"
+                                onChangeText={onChange}
+                                value={value}
+                            />
+                        )}
                     />
 
-                    <Input 
-                        placeholder="E-mail"
-                        keyboardType="email-address"
-                        autoCapitalize="none"
+                    <Controller 
+                        control={control}
+                        name="email"
+                        render={({ field: { onChange, value } }) => (
+                            <Input 
+                                placeholder="E-mail"
+                                keyboardType="email-address"
+                                autoCapitalize="none"
+                                onChangeText={onChange}
+                                value={value}
+                            />
+                        )}
                     />
 
-                    <Input 
-                        placeholder="Senha"
-                        secureTextEntry
+                    <Controller 
+                        control={control}
+                        name="password"
+                        render={({ field: { onChange, value } }) => (
+                            <Input 
+                                placeholder="Senha"
+                                secureTextEntry
+                                onChangeText={onChange}
+                                value={value}
+                            />
+                        )}
                     />
 
-                    <Button title="Criar e acessar" />
+                    <Controller 
+                        control={control}
+                        name="password_confirm"
+                        render={({ field: { onChange, value } }) => (
+                            <Input 
+                                placeholder="Confirme a senha"
+                                secureTextEntry
+                                onChangeText={onChange}
+                                value={value}
+                                onSubmitEditing={handleSubmit(handleSignUp)}
+                                returnKeyType="send"
+                            />
+                        )}
+                    />         
+
+                    <Button
+                        title="Criar e acessar"
+                        onPress={handleSubmit(handleSignUp)}
+                    />
                 </Center>
 
                 <Button 
