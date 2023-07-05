@@ -1,6 +1,7 @@
+import { useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import { Controller, useForm } from 'react-hook-form';
-import { VStack, Image, Text, Center, Heading, ScrollView } from 'native-base';
+import { VStack, Image, Text, Center, Heading, ScrollView, useToast } from 'native-base';
 
 import { AuthNavigatorRoutesProps } from '@routes/auth.routes';
 
@@ -11,6 +12,7 @@ import BackgroundImg from '@assets/background.png';
 
 import { Input } from '@components/Input';
 import { Button } from '@components/Button';
+import { AppError } from '@utils/AppError';
 
 type FormData = {
     email: string;
@@ -18,9 +20,11 @@ type FormData = {
 }
 
 export function SignIn() {
-    const { signIn } = useAuth();
+    const [isLoading, setIsLoading] = useState(false);
 
+    const { signIn } = useAuth();
     const navigation = useNavigation<AuthNavigatorRoutesProps>();
+    const toast = useToast();
 
     const { control, handleSubmit, formState: { errors } } = useForm<FormData>();
 
@@ -28,8 +32,23 @@ export function SignIn() {
         navigation.navigate('signUp');
     }
 
-    function handleSignIn({ email, password }: FormData) {
-        signIn(email, password);
+    async function handleSignIn({ email, password }: FormData) {
+        try {
+            setIsLoading(true);
+            await signIn(email, password);
+        } catch (error) {
+            const isAppError = error instanceof AppError;
+
+            const title = isAppError ? error.message : 'Não foi possível entrar. Tente novamente mais tarde.';
+
+            setIsLoading(false);
+
+            toast.show({
+                title,
+                placement: 'top',
+                bgColor: 'red.500'
+            });
+        }
     }
 
     return (
@@ -90,6 +109,7 @@ export function SignIn() {
                     <Button 
                         title="Acessar"
                         onPress={handleSubmit(handleSignIn)}
+                        isLoading={isLoading}
                     />
                 </Center>
 
