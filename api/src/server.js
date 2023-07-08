@@ -23,7 +23,7 @@ app.use("/exercise/thumb", express.static(thumbExercisesPath));
 const routes = require("./routes");
 
 app.use(express.json());
-app.use(cors());
+app.use(cors('*'));
 
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
